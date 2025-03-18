@@ -3,47 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Three.js con Texturas</title>
+    <title>Minimalist Three.js</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { margin: 0; background-color: #111; overflow: hidden; }
+    </style>
 </head>
-<body style="margin: 0; overflow: hidden;">
+<body>
     <script>
-        // Crear la escena
+        // Escena
         const scene = new THREE.Scene();
 
-        // Crear la cámara
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 5;
+        // Cámara
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 3;
 
-        // Crear el renderizador
+        // Renderizador
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x111111);
         document.body.appendChild(renderer.domElement);
 
-        // Cargar una textura
-        const textureLoader = new THREE.TextureLoader();
-        const textura = textureLoader.load('https://threejsfundamentals.org/threejs/resources/images/wall.jpg');
+        // Material elegante
+        const material = new THREE.MeshStandardMaterial({
+            color: 0x222222, // Gris oscuro
+            metalness: 0.8,
+            roughness: 0.2
+        });
 
-        // Crear una esfera en lugar de un cubo
-        const geometry = new THREE.SphereGeometry(1, 32, 32);
-        const material = new THREE.MeshStandardMaterial({ map: textura });
+        // Geometría (esfera)
+        const geometry = new THREE.SphereGeometry(1, 64, 64);
         const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
 
-        // Agregar luz direccional
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(2, 2, 5);
-        scene.add(light);
+        // Iluminación
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); // Luz ambiental tenue
+        scene.add(ambientLight);
 
-        // Animación
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(2, 2, 3);
+        scene.add(directionalLight);
+
+        // Animación fluida
         function animate() {
             requestAnimationFrame(animate);
-            sphere.rotation.y += 0.01;
+            sphere.rotation.y += 0.005; // Movimiento sutil
             renderer.render(scene, camera);
         }
         animate();
 
-        // Ajustar el tamaño al cambiar la ventana
+        // Ajustar tamaño al cambiar ventana
         window.addEventListener('resize', () => {
             renderer.setSize(window.innerWidth, window.innerHeight);
             camera.aspect = window.innerWidth / window.innerHeight;
