@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalist Three.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { margin: 0; background-color: #111; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <script>
+        // Escena
+        const scene = new THREE.Scene();
+
+        // Cámara
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 3;
+
+        // Renderizador
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x111111);
+        document.body.appendChild(renderer.domElement);
+
+        // Material más suave (cerámico/mate)
+        const material = new THREE.MeshPhysicalMaterial({
+            color: 0x888888,   // Gris elegante
+            roughness: 0.6,    // Menos reflejos
+            metalness: 0.1,    // Casi sin brillo metálico
+            clearcoat: 0.5,    // Suavidad en la superficie
+            clearcoatRoughness: 0.3 
+        });
+
+        // Geometría (esfera)
+        const geometry = new THREE.SphereGeometry(1, 64, 64);
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        // Iluminación
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4); // Luz ambiental tenue
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(2, 2, 3);
+        scene.add(directionalLight);
+
+        // Animación fluida
+        function animate() {
+            requestAnimationFrame(animate);
+            sphere.rotation.y += 0.005; // Movimiento sutil
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Ajustar tamaño al cambiar ventana
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+    </script>
+</body>
+</html>
